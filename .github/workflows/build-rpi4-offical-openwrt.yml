@@ -214,25 +214,25 @@ jobs:
           name: dl-archive
           path: openwrt
 
-      - name: Configure Rclone
-        env:
-          RCLONE_CONFIG: ${{ secrets.RCLONE_CONFIG }}
-        if: env.GENERATE_STATUS == 'success' && env.UPLOAD_RCLONE == 'true'
-        run: |
-          cd $OPENWRTROOT
-          curl https://rclone.org/install.sh | sudo bash
-          mkdir -p ~/.config/rclone/
-          cat << EOF > ~/.config/rclone/rclone.conf
-          $RCLONE_CONFIG
-          EOF
-
-      - name: Upload Targets File To Rclone
-        if: env.GENERATE_STATUS == 'success' && env.UPLOAD_RCLONE == 'true'
-        run: |
-          cd $OPENWRTROOT
-          rclone copy bin ${{ secrets.RCLONE_REMOTE }}:$(date +"%Y-%m-%d")/offical
-          rclone copy dl-archive.zip ${{ secrets.RCLONE_REMOTE }}:$(date +"%Y-%m-%d")/offical/targets/$TARGET/$SUBTARGET
-          echo "::warning file=Firmware-OpenWrt.cc::Download Link: https://openwrt.cc/snapshots/$(date +"%Y-%m-%d")/offical/targets/$TARGET/$SUBTARGET"
+#      - name: Configure Rclone
+#        env:
+#          RCLONE_CONFIG: ${{ secrets.RCLONE_CONFIG }}
+#        if: env.GENERATE_STATUS == 'success' && env.UPLOAD_RCLONE == 'true'
+#        run: |
+#          cd $OPENWRTROOT
+#          curl https://rclone.org/install.sh | sudo bash
+#          mkdir -p ~/.config/rclone/
+#          cat << EOF > ~/.config/rclone/rclone.conf
+#          $RCLONE_CONFIG
+#          EOF
+#
+#      - name: Upload Targets File To Rclone
+#        if: env.GENERATE_STATUS == 'success' && env.UPLOAD_RCLONE == 'true'
+#        run: |
+#          cd $OPENWRTROOT
+#          rclone copy bin ${{ secrets.RCLONE_REMOTE }}:$(date +"%Y-%m-%d")/offical
+#          rclone copy dl-archive.zip ${{ secrets.RCLONE_REMOTE }}:$(date +"%Y-%m-%d")/offical/targets/$TARGET/$SUBTARGET
+#          echo "::warning file=Firmware-OpenWrt.cc::Download Link: https://openwrt.cc/snapshots/$(date +"%Y-%m-%d")/offical/targets/$TARGET/$SUBTARGET"
 
       - name: Deploy Packages-Server
         if: env.GENERATE_STATUS == 'success'
